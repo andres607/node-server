@@ -53,6 +53,39 @@ function deleteTask() {
     console.log('4. Mostrar lista de tareas');
     console.log('0. Salir');
   }
+ 
+  function runTaskManager() {
+    let exit = false;
+  
+    while (!exit) {
+      showMenu();
+      const choice = readline.questionInt('Elige una opcion: ');
+  
+      switch (choice) {
+        case 0:
+          exit = true;
+          console.log('¡Hasta luego!');
+          break;
+        case 1:
+          addTask();
+          break;
+        case 2:
+          deleteTask();
+          break;
+        case 3:
+          completeTask();
+          break;
+        case 4:
+          printTasks();
+          break;
+        default:
+          console.log('Opción invalida. Por favor, elige una opción valida.');
+      }
+      console.log('--------------------------------');
+    }
+  }
+  
+  runTaskManager();
   
   
   
