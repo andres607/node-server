@@ -34,5 +34,25 @@ function deleteTask() {
       console.log('No se encontró una tarea con ese ID.');
     }
   }
+
+  function printTasks() {
+    console.log('Lista de tareas:');
+    tasks.forEach(task => {
+      console.log(`ID: ${task.id}`);
+      console.log(`Descripción: ${task.description}`);
+      console.log(`Estado: ${task.status}`);
+      console.log('------------');
+    });
+  }
+  
+  function showMenu() {
+    console.log('--- Administrador de Tareas ---');
+    console.log('1. Añadir tarea');
+    console.log('2. Eliminar tarea');
+    console.log('3. Marcar tarea como completada');
+    console.log('4. Mostrar lista de tareas');
+    console.log('0. Salir');
+  }
+  
   
   
