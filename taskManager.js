@@ -81,7 +81,7 @@ function deleteTask() {
         default:
           console.log('Opción invalida. Por favor, elige una opción valida.');
       }
-      console.log('--------------------------------');
+      console.log('-------------------------------');
     }
   }
   
