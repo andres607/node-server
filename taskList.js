@@ -55,36 +55,56 @@ function deleteTask() {
     console.log('0. Salir');
   }
  
-  function runTaskList() {
-    let exit = false;
+  async function run() {
+    let choice = '';
   
-    while (!exit) {
+    while (choice !== '0') {
       showMenu();
-      const choice = readline.questionInt('Elige una opcion: ');
+      choice = readline.question('Elija una opcion: ');
   
       switch (choice) {
-        case 0:
-          exit = true;
-          console.log('¡Hasta luego!');
+        case '1':
+          try {
+            const addMessage = await addTask();
+            console.log(addMessage);
+          } catch (error) {
+            console.log('Error:', error);
+          }
           break;
-        case 1:
-          addTask();
+        case '2':
+          deleteTask()
+            .then(message => console.log(message))
+            .catch(error => console.log('Error:', error));
           break;
-        case 2:
-          deleteTask();
+        case '3':
+          completeTask()
+            .then(message => console.log(message))
+            .catch(error => console.log('Error:', error));
           break;
-        case 3:
-          completeTask();
+        case '4':
+          try {
+            const taskList = await viewTasks();
+            console.log('=== Lista de Tareas ===');
+            taskList.forEach((task, index) => {
+              console.log(`Tarea ${index + 1}:`);
+              console.log(`Indicador: ${task.indicator}`);
+              console.log(`Descripcion: ${task.description}`);
+              console.log(`Estado: ${task.completed ? 'Completada' : 'Pendiente'}`);
+              console.log('-------------------------');
+            });
+          } catch (error) {
+            console.log('Error:', error);
+          }
           break;
-        case 4:
-          printTasks();
+        case '0':
+          console.log('Saliendo del programa.');
           break;
         default:
-          console.log('Opción invalida. Por favor, elige una opción valida.');
+          console.log('Opcion invalida. Intente nuevamente.');
       }
-      console.log('-------------------------------');
+  
+      console.log('\n');
     }
   }
-  
-  runTaskList();
-  
+
+  run();
