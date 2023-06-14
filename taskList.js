@@ -3,13 +3,16 @@ const readline = require('readline-sync');
 let tasks = [];
 
 function addTask() {
-  const id = tasks.length + 1;
-  const description = readline.question('Descripcion de la tarea: ');
-  const status = 'incompleta';
+  return new Promise((resolve, reject) => {
+    const indicator = readline.question('Ingrese el indicador de tarea:');
+    const description = readline.question('Ingrese descripcion de la tarea:');
+  });
 
-  tasks.push({ id, description, status });
-  console.log('Tarea añadida con exito.');
-}
+    tasks.push({
+      indicator,
+      description,
+      completed: false
+    });
 
 function deleteTask() {
     const taskId = readline.questionInt('ID de la tarea a eliminar: ');
@@ -54,7 +57,7 @@ function deleteTask() {
     console.log('0. Salir');
   }
  
-  function runTaskManager() {
+  function runTaskList() {
     let exit = false;
   
     while (!exit) {
@@ -85,7 +88,7 @@ function deleteTask() {
     }
   }
   
-  runTaskManager();
+  runTaskList();
   
   
   
