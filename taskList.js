@@ -7,7 +7,6 @@ function addTask() {
     const indicator = readline.question('Ingrese el indicador de tarea:');
     const description = readline.question('Ingrese descripcion de la tarea:');
   
-
     tasks.push({
       indicator,
       description,
