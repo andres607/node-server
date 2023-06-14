@@ -31,23 +31,31 @@ function deleteTask() {
         }
     });
   }
-
+  
   function completeTask() {
-    return new Promise((resolve, reject) => {
-      const indicator = readline.question('Ingrese el indicador de la tarea a completar: ');
-
-      const task = tasks.find(task => task.indicator === indicator);
-       if (task) {
-         task.completed = true;
-        resolve('Tarea completada.');
-     } else {
-       reject('No se encontro la tarea con el indicador proporcionado.');
+    const taskId = readline.questionInt('ID de la tarea completada: ');
+  
+    const task = tasks.find(task => task.id === taskId);
+    if (task) {
+      task.status = 'completada';
+      console.log('Tarea marcada como completada.');
+    } else {
+      console.log('No se encontró una tarea con ese ID.');
     }
-  });
-}
+  }
+
+  function printTasks() {
+    console.log('Lista de tareas:');
+    tasks.forEach(task => {
+      console.log(`ID: ${task.id}`);
+      console.log(`Descripción: ${task.description}`);
+      console.log(`Estado: ${task.status}`);
+      console.log('------------');
+    });
+  }
   
   function showMenu() {
-    console.log('--- Lista de Tareas ---');
+    console.log('--- Administrador de Tareas ---');
     console.log('1. Añadir tarea');
     console.log('2. Eliminar tarea');
     console.log('3. Marcar tarea como completada');
