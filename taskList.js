@@ -6,13 +6,17 @@ function addTask() {
   return new Promise((resolve, reject) => {
     const indicator = readline.question('Ingrese el indicador de tarea:');
     const description = readline.question('Ingrese descripcion de la tarea:');
-  });
+  
 
     tasks.push({
       indicator,
       description,
       completed: false
     });
+
+    resolve('La tarea se añadio correctamente.');
+  });
+}
 
 function deleteTask() {
     const taskId = readline.questionInt('ID de la tarea a eliminar: ');
@@ -89,6 +93,4 @@ function deleteTask() {
   }
   
   runTaskList();
-  
-  
   
