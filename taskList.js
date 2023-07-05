@@ -1,77 +1,72 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+const http = require('http');
+const port = 4000;
 
 let tasks = [];
+let taskIdCounter = 1;
 
-function addTask() {
-  return new Promise((resolve, reject) => {
-    const indicator = readline.question('Ingrese el indicador de tarea:');
-    const description = readline.question('Ingrese descripcion de la tarea:');
+const server = http.createServer((req, res) => {
+  if (req.method === 'POST' && req.url === '/tasks') {
+    let body = '';
 
-    const task = {
-      id: tasks.length + 1,
-      indicator,
-      description,
-      completed: false
-    };
+    req.on('data', (data) => {
+      body += data;
+    });
 
-    tasks.push(task);
+    req.on('end', () => {
+      const { description } = JSON.parse(body);
+      const id = taskIdCounter++;
 
-    resolve(task);
-  });
-}
+      const task = {
+        id,
+        description,
+        completed: false
+      };
 
-function deleteTask() {
-  return new Promise((resolve, reject) => {
-    const indicator = readline.question('Ingrese indicador de la tarea a eliminar:');
+      tasks.push(task);
 
-    const taskIndex = tasks.findIndex(task => task.indicator === indicator);
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 200;
+      res.end(JSON.stringify({ message: 'La tarea se añadió correctamente.', task }));
+    });
+  } else if (req.method === 'DELETE' && req.url.startsWith('/tasks/')) {
+    const id = parseInt(req.url.split('/')[2]);
+
+    const taskIndex = tasks.findIndex(task => task.id === id);
     if (taskIndex !== -1) {
       tasks.splice(taskIndex, 1);
-      resolve('Tarea eliminada con exito.');
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 200;
+      res.end(JSON.stringify({ message: 'Tarea eliminada con éxito.' }));
     } else {
-      reject('No se encontro la tarea con el indicador proporcionado.');
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 404;
+      res.end(JSON.stringify({ error: 'No se encontró la tarea con el ID proporcionado.' }));
     }
-  });
-}
+  } else if (req.method === 'PUT' && req.url.startsWith('/tasks/')) {
+    const id = parseInt(req.url.split('/')[2]);
 
-function completeTask() {
-  return new Promise((resolve, reject) => {
-    const indicator = readline.question('Ingrese el indicador de la tarea a completar: ');
-
-    const task = tasks.find(task => task.indicator === indicator);
+    const task = tasks.find(task => task.id === id);
     if (task) {
       task.completed = true;
-      resolve('Tarea completada.');
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 200;
+      res.end(JSON.stringify({ message: 'Tarea completada.', task }));
     } else {
-      reject('No se encontro la tarea con el indicador proporcionado.');
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 404;
+      res.end(JSON.stringify({ error: 'No se encontró la tarea con el ID proporcionado.' }));
     }
-  });
-}
-
-function showMenu() {
-  console.log('--- Lista de Tareas ---');
-  console.log('1. Añadir tarea');
-  console.log('2. Eliminar tarea');
-  console.log('3. Marcar tarea como completada');
-  console.log('4. Mostrar lista de tareas');
-  console.log('0. Salir');
-}
-
-app.get('/tasks', (req, res) => {
-  res.json(tasks);
+  } else if (req.method === 'GET' && req.url === '/tasks') {
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = 200;
+    res.end(JSON.stringify(tasks));
+  } else {
+    res.setHeader('Content-Type', 'text/plain');
+    res.statusCode = 404;
+    res.end('404 Not Found');
+  }
 });
 
-async function startServer() {
-  try {
-    await run();
-    app.listen(port, () => {
-      console.log(`Servidor escuchando en http://localhost:${port}`);
-    });
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-startServer();
+server.listen(port, () => {
+  console.log(`Servidor iniciado en http://localhost:${port}`);
+});
